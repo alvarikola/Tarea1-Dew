@@ -1,0 +1,96 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    color: rgb(0, 0, 0);
+    background-color: white;
+}
+
+.contenedorCartel {
+    display: flex;
+    text-align: center;
+}
+
+.cartel {
+    position: relative;
+    text-align: center;
+    display: inline-block;
+    width: 300px;
+}
+
+.nombre {
+    font-weight: bold;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    text-align: center;
+}
+
+.cartel img {
+    width: 200px;
+}
+
+.contenedorNumPuerta {
+    display: flex;
+    text-align: center;
+}
+
+.numPuerta {
+    font-weight: bold;  
+    width: 300px;
+}
+
+.imagenTienda {
+    display: flex;
+}
+.imagenTienda img{
+    width: 300px;
+}
+
+.contenedorSemaforoHora {
+    display: flex;
+    text-align: center;
+}
+
+.reloj {
+    position: relative;
+    text-align: center;
+    display: inline-block;
+}
+
+.hora {
+    font-weight: bold;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    text-align: center;
+}
+
+.reloj img {
+    width: 200px;
+}
+
+.contenedorSemaforoHora {
+    display: flex;
+    text-align: center;
+}
+
+.contenedorSemaforoHora img{
+    width: 200px;
+}
+
+
+.contenedorCoche {
+    display: flex;
+    text-align: center;
+}
+
+.contenedorCoche img{
+    width: 300px;
+}
+
+
