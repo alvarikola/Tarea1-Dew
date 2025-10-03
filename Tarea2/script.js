@@ -16,12 +16,17 @@ var Avion = function(rows, columns, compañia, price) {
     this.compañia = compañia;
     this.price = price;
     this.asiento = [];
-    for (let r = 0; r < numRows; r++) {
+    document.write("<div class='avion'>");
+    for (let r = 0; r < rows; r++) {
+        document.write("<div class='filas'>");
         this.asiento[r] = [];
-        for (let c = 0; c < numCols; c++) {
-            this.asiento[r][c] = true;
+        for (let c = 0; c < columns; c++) {
+            document.write("<div class=''>" + c + "</div>")
+            this.asiento[r][c] = false;
         }
+        document.write("</div>");
     }
+    document.write("</div>");
     this.reservar =function() {
         console.log("Buy Theatre ticket "+this.price+" €");
     };
@@ -30,6 +35,6 @@ var Avion = function(rows, columns, compañia, price) {
     };
 }
 
-
+let avion1 = new Avion(4, 45, "binter", 10);
 
 

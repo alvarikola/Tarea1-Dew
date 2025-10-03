@@ -6,6 +6,12 @@
     background-color: white;
 }
 
+h1{
+    text-align: center;
+    margin-top: 30px;
+    font-size: 70px;
+}
+
 .logo {
     display: flex;
     width: 100%;
@@ -43,4 +49,26 @@
 .botonAvion a {
     text-decoration: none;
     font-size: 30px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+
+    display: flex;
+    justify-content: center; 
+    align-items: center;  
+}
+
+#ryaner a:hover {
+  background-color: blue;
+  color: white;
+}
+
+#binter a:hover {
+  background-color:chartreuse;
+  color: white;
+}
+
+#iberia a:hover {
+  background-color: red;
+  color: white;
 }
