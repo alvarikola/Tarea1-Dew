@@ -72,3 +72,38 @@ h1{
   background-color: red;
   color: white;
 }
+
+
+table.asientos {
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+td {
+    border: 1px solid #444;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    width: 60px;
+}
+
+td.libre {
+    background-color: lightgreen;
+}
+
+td.business {
+    font-weight: bold;
+}
+
+td.economica {
+    background-color: #eef;
+}
+
+td.lowcost {
+    background-color: #fff8dc;
+}
+
+td.ocupado {
+    background-color: tomato;
+    /*cursor: not-allowed;*/
+}
