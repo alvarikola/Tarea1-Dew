@@ -27,6 +27,15 @@ h1{
     width: 200px;
 }
 
+#precioTotal{
+    font-size: 30px;
+    width: 100%;
+    margin: 40px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
 .botones {
     display: flex;
     flex-direction: column;

@@ -100,6 +100,7 @@ function Avion(rows, columns, compañia, precioBase) {
 
 // Declarar avion en el ámbito global
 let avion;
+
 let precioTotal = 0;
 function cargarPrecioTotal() {
     const almacenado = localStorage.getItem('precioTotal');
@@ -148,5 +149,26 @@ function toggleReservaAsiento(fila, columna, precioFinal) {
         }
     }
     actualizarPrecio();
+    avion.mostrarTabla();
     location.reload(); // Refresca para actualizar visualmente
+}
+
+function terminar() {
+    respuesta = prompt("¿Confirmar compra? (si o no)");
+    if (respuesta.toLowerCase().trim() == "si") {
+        navegarPantallas("index.html");
+        localStorage.removeItem('precioTotal');
+        localStorage.removeItem('asientos_Ryanair');
+        localStorage.removeItem('asientos_Binter');
+        localStorage.removeItem('asientos_Iberia');
+        precioTotal = 0;
+        actualizarPrecio();
+        location.reload();
+    }
+    else if(respuesta.toLowerCase().trim() == "no") {
+        alert("Seecciona tus asientos");
+    }
+    else {
+        alert("Introduce una respuesta válida");
+    }
 }
