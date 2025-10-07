@@ -1,6 +1,6 @@
 function navegarPantallas(pantalla){
     switch(pantalla){
-        case "Ryaner": return window.location.href = 'ryaner.html'
+        case "Ryanair": return window.location.href = 'ryanair.html'
         case "Binter": return window.location.href = 'binter.html'
         case "Iberia": return window.location.href = 'iberia.html'
         case "Inicio": return window.location.href = 'index.html'
@@ -43,7 +43,6 @@ function Avion(rows, columns, compañia, precioBase) {
             this.guardarEstado();
             return true;
         } else {
-            alert("Asiento ya ocupado");
             return false;
         }
     };
@@ -60,17 +59,26 @@ function Avion(rows, columns, compañia, precioBase) {
 
     // Mostrar tabla de asientos
     this.mostrarTabla = function () {
-        document.write(`<table class="asientos">`);
+        document.write('<table class="asientos">');
         for (let i = 0; i < this.rows; i++) {
             document.write("<tr>");
             for (let j = 0; j < this.columns; j++) {
+
                 let clase = "lowcost";
-                if (i < 2) clase = "business";
-                else if (i < 5) clase = "economica";
+                if (i < 2) {
+                    clase = "business";
+                }
+                else if (i < 5) {
+                    clase = "economica";
+                } 
 
                 let precioFinal = this.precioBase;
-                if (clase === "business") precioFinal *= 2;
-                else if (clase === "economica") precioFinal *= 1.5;
+                if (clase === "business"){
+                    precioFinal *= 2;
+                }
+                else if (clase === "economica") {
+                    precioFinal *= 1.5;
+                } 
 
                 const ocupado = this.asientos[i][j];
 
@@ -78,7 +86,7 @@ function Avion(rows, columns, compañia, precioBase) {
                 const letraFila = String.fromCharCode(65 + i); // A = 65
                 const numeroColumna = j + 1;
                 document.write(`
-                    <td onclick="toggleReservaAsiento(${i},${j})" class="${clase} ${ocupado ? 'ocupado' : 'libre'}">
+                    <td onclick="toggleReservaAsiento(${i},${j}, ${precioFinal})" class="${clase} ${ocupado ? 'ocupado' : 'libre'}">
                         ${letraFila}${numeroColumna}
                         <br>${precioFinal}€
                     </td>`);
@@ -90,25 +98,55 @@ function Avion(rows, columns, compañia, precioBase) {
 }
 
 
+// Declarar avion en el ámbito global
+let avion;
+let precioTotal = 0;
+function cargarPrecioTotal() {
+    const almacenado = localStorage.getItem('precioTotal');
+    if (almacenado) {
+        precioTotal = parseFloat(almacenado);
+    } else {
+        precioTotal = 0;
+    }
+}
+function guardarPrecioTotal() {
+    localStorage.setItem('precioTotal', precioTotal.toString());
+}
 
+// Función para actualizar el precio total en el DOM
+function actualizarPrecio() {
+    const contenedorPrecio = document.getElementById('precioTotal');
+    contenedorPrecio.textContent = `Precio total: ${precioTotal}€`;
+    guardarPrecioTotal();
+}
 
-
-
-let avion = new Avion(6, 45, "Binter", 10)
-avion.mostrarTabla();
+function crearAvion(filas, columnas, compañia, precio) {
+    if (compañia == "Ryanair" || compañia == "Binter" || compañia == "Iberia") {
+        avion = new Avion(filas, columnas, compañia, precio);
+        avion.mostrarTabla();
+        precioTotal = 0; // reiniciar al crear un nuevo avión
+        cargarPrecioTotal();
+        actualizarPrecio();
+    } else {
+        alert("Introduce una compañía válida");
+    }
+}
 
 // Función global para reservar o liberar asiento con toggle
-function toggleReservaAsiento(fila, columna) {
+function toggleReservaAsiento(fila, columna, precioFinal) {
     if (!avion.asientos[fila][columna]) {
         // Si está libre, reservar
         if (avion.reservarAsiento(fila, columna)) {
+            precioTotal += precioFinal
             alert(`Asiento ${String.fromCharCode(65 + fila)}${columna + 1} reservado correctamente.`);
         }
     } else {
         // Si está ocupado, liberar
         if (avion.liberarAsiento(fila, columna)) {
+            precioTotal -= precioFinal
             alert(`Asiento ${String.fromCharCode(65 + fila)}${columna + 1} liberado correctamente.`);
         }
     }
+    actualizarPrecio();
     location.reload(); // Refresca para actualizar visualmente
 }

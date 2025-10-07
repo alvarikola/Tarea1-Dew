@@ -58,7 +58,7 @@ h1{
     align-items: center;  
 }
 
-#ryaner a:hover {
+#ryanair a:hover {
   background-color: blue;
   color: white;
 }
@@ -105,5 +105,4 @@ td.lowcost {
 
 td.ocupado {
     background-color: tomato;
-    /*cursor: not-allowed;*/
 }
