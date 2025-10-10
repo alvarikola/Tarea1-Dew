@@ -65,19 +65,19 @@ function Avion(rows, columns, compañia, precioBase) {
             for (let j = 0; j < this.columns; j++) {
 
                 let clase = "lowcost";
-                if (i < 2) {
+                if (j < 2) {
                     clase = "business";
                 }
-                else if (i < 5) {
+                else if (j < 5) {
                     clase = "economica";
                 } 
 
                 let precioFinal = this.precioBase;
                 if (clase === "business"){
-                    precioFinal *= 2;
+                    precioFinal = precioFinal * 2;
                 }
                 else if (clase === "economica") {
-                    precioFinal *= 1.5;
+                    precioFinal = precioFinal * 1.5;
                 } 
 
                 const ocupado = this.asientos[i][j];
@@ -156,14 +156,16 @@ function toggleReservaAsiento(fila, columna, precioFinal) {
 function terminar() {
     respuesta = prompt("¿Confirmar compra? (si o no)");
     if (respuesta.toLowerCase().trim() == "si") {
-        navegarPantallas("index.html");
+        const asientosOcupados = document.getElementsByClassName("ocupado");
+        for (let i = 0; i < asientosOcupados.length; i++) {
+            asientosOcupados[i].removeAttribute("onclick");
+        }
         localStorage.removeItem('precioTotal');
-        localStorage.removeItem('asientos_Ryanair');
-        localStorage.removeItem('asientos_Binter');
-        localStorage.removeItem('asientos_Iberia');
         precioTotal = 0;
         actualizarPrecio();
-        location.reload();
+        //location.reload();
+        //navegarPantallas("Inicio");
+
     }
     else if(respuesta.toLowerCase().trim() == "no") {
         alert("Seecciona tus asientos");
