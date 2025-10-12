@@ -115,3 +115,7 @@ td.lowcost {
 td.ocupado {
     background-color: tomato;
 }
+
+.comprado {
+    cursor: not-allowed;
+}

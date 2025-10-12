@@ -1,12 +1,12 @@
-function navegarPantallas(pantalla){
-    switch(pantalla){
-        case "Ryanair": return window.location.href = 'ryanair.html'
-        case "Binter": return window.location.href = 'binter.html'
-        case "Iberia": return window.location.href = 'iberia.html'
-        case "Inicio": return window.location.href = 'index.html'
+// Navegar entre pantallas
+function navegarPantallas(pantalla) {
+    switch (pantalla) {
+        case "Ryanair": return window.location.href = 'ryanair.html';
+        case "Binter": return window.location.href = 'binter.html';
+        case "Iberia": return window.location.href = 'iberia.html';
+        case "Inicio": return window.location.href = 'index.html';
     }
 }
-
 
 
 // Clase Avion
@@ -22,7 +22,7 @@ function Avion(rows, columns, compañia, precioBase) {
     if (storedAsientos) {
         this.asientos = JSON.parse(storedAsientos);
     } else {
-        // Inicializa matriz de asientos (todos libres)
+        // Inicializar matriz de asientos (todos libres)
         for (let i = 0; i < rows; i++) {
             this.asientos[i] = [];
             for (let j = 0; j < columns; j++) {
@@ -32,29 +32,8 @@ function Avion(rows, columns, compañia, precioBase) {
     }
 
     // Guardar asientos en localStorage
-    this.guardarEstado = function() {
+    this.guardarEstado = function () {
         localStorage.setItem(`asientos_${this.compañia}`, JSON.stringify(this.asientos));
-    };
-
-    // Reservar asiento
-    this.reservarAsiento = function (fila, columna) {
-        if (!this.asientos[fila][columna]) {
-            this.asientos[fila][columna] = true;
-            this.guardarEstado();
-            return true;
-        } else {
-            return false;
-        }
-    };
-
-    // Liberar asiento
-    this.liberarAsiento = function (fila, columna) {
-        if (this.asientos[fila][columna]) {
-            this.asientos[fila][columna] = false;
-            this.guardarEstado();
-            return true;
-        }
-        return false;
     };
 
     // Mostrar tabla de asientos
@@ -65,28 +44,28 @@ function Avion(rows, columns, compañia, precioBase) {
             for (let j = 0; j < this.columns; j++) {
 
                 let clase = "lowcost";
-                if (j < 2) {
-                    clase = "business";
-                }
-                else if (j < 5) {
-                    clase = "economica";
-                } 
+                if (j < 2) clase = "business";
+                else if (j < 5) clase = "economica";
 
                 let precioFinal = this.precioBase;
-                if (clase === "business"){
-                    precioFinal = precioFinal * 2;
-                }
-                else if (clase === "economica") {
-                    precioFinal = precioFinal * 1.5;
-                } 
+                if (clase === "business") precioFinal *= 2;
+                else if (clase === "economica") precioFinal *= 1.5;
 
-                const ocupado = this.asientos[i][j];
+                let estado = this.asientos[i][j];
+                let ocupado = estado === "reservado" || estado === "comprado";
 
-                // Convertimos fila a letra (A, B, C...) y columna a número (1, 2, 3...)
-                const letraFila = String.fromCharCode(65 + i); // A = 65
-                const numeroColumna = j + 1;
+                let letraFila = String.fromCharCode(65 + i);
+                let numeroColumna = j + 1;
+
+                let extraClase = ocupado ? 'ocupado' : 'libre';
+                if (estado === "comprado") extraClase += " comprado";
+
+                const onclickAttr = estado === "comprado"
+                    ? ""
+                    : `onclick="toggleReservaAsiento(${i},${j}, ${precioFinal})"`;
+
                 document.write(`
-                    <td onclick="toggleReservaAsiento(${i},${j}, ${precioFinal})" class="${clase} ${ocupado ? 'ocupado' : 'libre'}">
+                    <td ${onclickAttr} class="${clase} ${extraClase}">
                         ${letraFila}${numeroColumna}
                         <br>${precioFinal}€
                     </td>`);
@@ -97,11 +76,9 @@ function Avion(rows, columns, compañia, precioBase) {
     };
 }
 
-
-// Declarar avion en el ámbito global
 let avion;
-
 let precioTotal = 0;
+
 function cargarPrecioTotal() {
     const almacenado = localStorage.getItem('precioTotal');
     if (almacenado) {
@@ -110,22 +87,24 @@ function cargarPrecioTotal() {
         precioTotal = 0;
     }
 }
+
 function guardarPrecioTotal() {
     localStorage.setItem('precioTotal', precioTotal.toString());
 }
 
-// Función para actualizar el precio total en el DOM
+// Actualizar el precio total
 function actualizarPrecio() {
     const contenedorPrecio = document.getElementById('precioTotal');
     contenedorPrecio.textContent = `Precio total: ${precioTotal}€`;
     guardarPrecioTotal();
 }
 
+// Crear avión
 function crearAvion(filas, columnas, compañia, precio) {
     if (compañia == "Ryanair" || compañia == "Binter" || compañia == "Iberia") {
         avion = new Avion(filas, columnas, compañia, precio);
         avion.mostrarTabla();
-        precioTotal = 0; // reiniciar al crear un nuevo avión
+        precioTotal = 0;
         cargarPrecioTotal();
         actualizarPrecio();
     } else {
@@ -133,42 +112,52 @@ function crearAvion(filas, columnas, compañia, precio) {
     }
 }
 
-// Función global para reservar o liberar asiento con toggle
+// Reservar o liberar asiento
 function toggleReservaAsiento(fila, columna, precioFinal) {
-    if (!avion.asientos[fila][columna]) {
-        // Si está libre, reservar
-        if (avion.reservarAsiento(fila, columna)) {
-            precioTotal += precioFinal
-            alert(`Asiento ${String.fromCharCode(65 + fila)}${columna + 1} reservado correctamente.`);
-        }
-    } else {
-        // Si está ocupado, liberar
-        if (avion.liberarAsiento(fila, columna)) {
-            precioTotal -= precioFinal
-            alert(`Asiento ${String.fromCharCode(65 + fila)}${columna + 1} liberado correctamente.`);
-        }
+    const estado = avion.asientos[fila][columna];
+
+    if (estado === false) {
+        avion.asientos[fila][columna] = "reservado";
+        precioTotal += precioFinal;
+        alert(`Asiento ${String.fromCharCode(65 + fila)}${columna + 1} reservado.`);
+    } 
+    else if (estado === "reservado") {
+        avion.asientos[fila][columna] = false;
+        precioTotal -= precioFinal;
+        alert(`Asiento ${String.fromCharCode(65 + fila)}${columna + 1} liberado.`);
     }
+
+    avion.guardarEstado();
     actualizarPrecio();
-    avion.mostrarTabla();
-    location.reload(); // Refresca para actualizar visualmente
+    location.reload();
 }
 
+
+// Confirmar compra
 function terminar() {
-    respuesta = prompt("¿Confirmar compra? (si o no)");
+    let respuesta = prompt("¿Confirmar compra? (si o no)");
+
     if (respuesta.toLowerCase().trim() == "si") {
-        const asientosOcupados = document.getElementsByClassName("ocupado");
-        for (let i = 0; i < asientosOcupados.length; i++) {
-            asientosOcupados[i].removeAttribute("onclick");
+        for (let i = 0; i < avion.rows; i++) {
+            for (let j = 0; j < avion.columns; j++) {
+                if (avion.asientos[i][j] === "reservado") {
+                    avion.asientos[i][j] = "comprado";
+                }
+            }
         }
+
+        avion.guardarEstado();
+
+        // Reiniciar precio
         localStorage.removeItem('precioTotal');
         precioTotal = 0;
         actualizarPrecio();
-        //location.reload();
-        //navegarPantallas("Inicio");
 
+        alert("Compra finalizada");
+        navegarPantallas("Inicio");
     }
-    else if(respuesta.toLowerCase().trim() == "no") {
-        alert("Seecciona tus asientos");
+    else if (respuesta.toLowerCase().trim() == "no") {
+        alert("Sigue seleccionando tus asientos");
     }
     else {
         alert("Introduce una respuesta válida");
