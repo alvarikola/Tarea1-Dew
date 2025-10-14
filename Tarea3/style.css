@@ -11,7 +11,7 @@ h1 {
     margin: 30px;
 }
 
-.tabla {
+.contenedorTabla {
     width: 100%;
     height: 100%;
     display: flex;
@@ -21,9 +21,31 @@ h1 {
 
 table {
     table-layout: fixed;
-    width: 80%;
+    width: 1200px;
     height: 600px;
     border-collapse: collapse;
-    border: 3px solid purple;
-    /*text-align: center;*/
+    border: 5px solid red;
+    text-align: center;
+}
+
+td {
+    width: 380px;
+}
+
+.contenedorTabla img {
+    width: 100%;
+    height: 100%;
+    padding: 3px;
+}
+
+.boton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    font-size: 40px;
+    margin-top: 20px;
 }
