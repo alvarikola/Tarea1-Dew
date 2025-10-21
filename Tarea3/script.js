@@ -44,7 +44,7 @@ function actualizarContador() {
 }
 
 function cargarRecord() {
-    const record = localStorage.getItem("puzzle-record");
+    const record = localStorage.getItem("record");
     if (record) {
         const [min, seg] = record.split(":").map(Number);
         recordElement.textContent = `Récord: ${formatearTiempo(min, seg)}`;
@@ -55,10 +55,10 @@ function cargarRecord() {
 
 function guardarRecord(min, seg) {
     const tiempoActual = min * 60 + seg;
-    const recordGuardado = localStorage.getItem("puzzle-record");
+    const recordGuardado = localStorage.getItem("record");
     
     if (!recordGuardado) {
-        localStorage.setItem("puzzle-record", `${min}:${seg}`);
+        localStorage.setItem("record", `${min}:${seg}`);
         cargarRecord();
         return;
     }
@@ -67,7 +67,7 @@ function guardarRecord(min, seg) {
     const tiempoRecord = rMin * 60 + rSeg;
 
     if (tiempoActual < tiempoRecord) {
-        localStorage.setItem("puzzle-record", `${min}:${seg}`);
+        localStorage.setItem("record", `${min}:${seg}`);
         cargarRecord();
     }
 }
@@ -149,7 +149,7 @@ function verificarVictoria() {
     for (let i = 1; i <= 8; i++) {
         const celda = document.getElementById(i);
         const img = celda.querySelector("img");
-        if (!img || img.src.split('/').pop() !== `${i}.jpeg`) {
+        if (!img || img.src !== `${i}.jpeg`) {
             correcto = false;
             break;
         }
@@ -177,14 +177,14 @@ function guardarPartida() {
         juegoIniciado
     };
 
-    localStorage.setItem("puzzle-partida", JSON.stringify(partida));
+    localStorage.setItem("partidaGuardada", JSON.stringify(partida));
     alert("Partida guardada.");
 }
 
 function cargarPartida() {
-    const partidaGuardada = localStorage.getItem("puzzle-partida");
+    const partidaGuardada = localStorage.getItem("partidaGuardada");
     if (!partidaGuardada) {
-        alert("No hay partida guardada.");
+        alert("No hay partida guardada");
         return;
     }
 
