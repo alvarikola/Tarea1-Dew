@@ -1,130 +1,127 @@
-//https://www.w3schools.com/html/html_forms.asp
+// --- VARIABLES BASE ---
+const searchForm = document.forms[0];
+const addForm = document.forms["add-ex"];
+const list = document.querySelector('#ex-list ul');
+const popup = document.querySelector('.popup');
 
+let carpetaDestino = list; // Por defecto, la raíz
 
-// DEFINICIÓN DE FORMULARIOS Y LISTA
-
-const searchForm=document.forms[0]; // Accede al primer formulario en el documento (índice [0]) y lo almacena en 'searchForm'.
-
-const addForm=document.forms["add-ex"]; // Accede al formulario con el nombre add-ex y lo guarda en addForm.
-
-const list = document.querySelector('#ex-list ul'); // Selecciona el elemento 'ul' dentro del contenedor ''#ex-list' y lo asigna a list, donde se listarán los ejercicios.
-
-// BORRAR EJERCICIOS
-
-// Añade un evento 'click' al elemento 'list' que se ejecutará cada vez que se haga clic en él.
-list.addEventListener('click', function(e) {
-  // Verifica si el elemento clicado tiene la clase 'delete', que indica que se ha clicado el botón para eliminar.
-  if(e.target.className == 'delete'){
-    const li = e.target.parentElement; // Selecciona el elemento 'li' padre del botón de eliminación, que es el elemento de la lista a eliminar.    
-    li.parentNode.removeChild(li); // Elimina el elemento 'li' del DOM
-    
-   // Dos formas alternativas de ocultar el elemento sin eliminarlo (estableciendo el estilo display: none).
-   //li.setAttribute ('style', 'display: none');
-   //li.style.display="none"; 
-    
-    //https://www.w3schools.com/jsref/prop_style_display.asp
+// --- BORRAR ---
+list.addEventListener('click', (e) => {
+  if (e.target.className === 'delete') {
+    e.target.parentElement.remove();
   }
 });
 
-
-// OCULTAR EJERCICIOS
-
-
-const hideBox = document.querySelector('#hide'); //Selecciona el elemento con id hide, que probablemente es un checkbox para ocultar la lista de ejercicios.
-// Añade un evento 'change' al checkbox 'hideBox' que se dispara al marcar o desmarcar.
-hideBox.addEventListener('change', function(){
-  // Si hideBox está marcado 'checked', oculta la lista de ejercicios (display: none); 
-  if(hideBox.checked){
-    list.style.display = "none";
-    // si está desmarcado, vuelve a mostrarla (display: initial).
-  } else {
-    list.style.display = "initial";
-  }
-});
-
-
-// AÑADIR EJERCICIOS
-
-// Añade un evento 'click' al botón dentro del formulario 'addForm' que se ejecutará al hacer clic en él.
-addForm.querySelector("button").addEventListener('click', function(e){
-
- // Previene la acción por defecto del botón para evitar que la página se recargue.
-  e.preventDefault();
-  
-  //https://www.w3schools.com/tags/att_button_type.asp
-
- // CREAR ELEMENTOS
-  
-  
-  const value = addForm.querySelector('input[type="text"]').value; // Obtiene el valor del campo de entrada de texto en addForm, que representa el nombre del ejercicio.
-  // Crea tres elementos HTML (<li>, <span> para el nombre del ejercicio, y otro <span> para el botón de eliminación).
-  const li = document.createElement('li');
-  const ExName = document.createElement('span');
-  const deleteBtn = document.createElement('span');
-
-// AGREGAR CONTENIDO DE TEXTO
-  
-  // Asigna el texto del ejercicio al span ExName y la palabra delete al botón deleteBtn.
-  ExName.textContent = value;
-  deleteBtn.textContent = 'delete';
-  
-// AGREGAR CLASES
-  
-  // Añade la clase 'name' a 'ExName' y 'delete' a 'deleteBtn' para estilización y referencia.
-  ExName.classList.add('name');
-  deleteBtn.classList.add('delete');
-
-
-// AÑADIR AL DOM
-  
-  // Inserta 'ExName' y 'deleteBtn' dentro del 'li', y después añade este 'li' al final de list.
-  li.appendChild(ExName);
-  li.appendChild(deleteBtn);
-  list.appendChild(li);
-  });
-
-// FILTRAR EJERCICIOS
-
-const searchBar = document.forms['search-ex'].querySelector('input'); // Selecciona el campo de entrada dentro del formulario search-ex para buscar ejercicios y lo guarda en searchBar.
-// Añade un evento 'keyup' al campo de búsqueda que se ejecutará cada vez que se suelte una tecla.
-searchBar.addEventListener('keyup',(e)=>{// FUNCIÓN DE FLECHA
-   
-  const term = e.target.value.toLowerCase();// to insure matches para asegurar coincidencias --> Convierte el texto de búsqueda en minúsculas para realizar una comparación insensible a mayúsculas.
-  
-  const exercises = list.getElementsByTagName('li'); // Obtiene todos los elementos 'li' de list (la lista de ejercicios).
-  
-  // Convierte exercises en un array y recorre cada ejercicio (exer) en la lista.
-  Array.from(exercises).forEach(function (exer){ //FOR EACH instead of for loop
-    // Obtiene el texto del primer elemento hijo (el nombre del ejercicio) dentro de cada <li>.
-    const title = exer.firstElementChild.textContent;   
-    // Si el término de búsqueda no se encuentra en el título (indexOf(term) == -1), oculta el ejercicio (display: none). 
-    if(title.toLowerCase().indexOf(term) == -1){ //-1 significa no presente
-      exer.style.display = 'none';
-      // Si lo encuentra, muestra el ejercicio (display: block).
+// --- FUNCIÓN DE OCULTAR ---
+function activarOcultar(hideBox) {
+  hideBox.addEventListener('change', function() {
+    let subList;
+    const carpetaLi = hideBox.closest('li');
+    if (carpetaLi) {
+      subList = carpetaLi.querySelector('ul');
     } else {
-      exer.style.display = 'block';
+      subList = document.querySelector('#ex-list > ul');
     }
+    if (subList) subList.style.display = hideBox.checked ? 'none' : 'initial';
+  });
+}
+
+// Activar los existentes
+document.querySelectorAll('.hide').forEach(activarOcultar);
+
+// --- POPUP ---
+// Cuando se hace clic en el "+"
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('plusBtn')) {
+    const carpetaLi = e.target.closest('li');
+    if (carpetaLi) {
+      carpetaDestino = carpetaLi.querySelector('ul'); // ul interno de esa carpeta
+    } else {
+      carpetaDestino = list; // raíz
+    }
+    popup.style.display = 'flex';
+  }
+});
+
+// Cerrar popup
+document.querySelectorAll('.close-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    popup.style.display = 'none';
   });
 });
 
-// pop up
-document.querySelectorAll('.plusBtn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-        // Busca el popup más cercano dentro del mismo "li" o contenedor
-        const popup = btn.closest('li')?.querySelector('.popup') || document.querySelector('.popup');
-        if (popup) popup.style.display = 'flex';
-    });
-});
-
-document.querySelectorAll('.close-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-        btn.closest('.popup').style.display = 'none';
-    });
-});
-
-// Cierra si se hace clic fuera del popup
 window.addEventListener('click', (e) => {
-    document.querySelectorAll('.popup').forEach(popup => {
-        if (e.target === popup) popup.style.display = 'none';
-    });
+  if (e.target === popup) popup.style.display = 'none';
+});
+
+// --- AÑADIR ARCHIVO / CARPETA ---
+addForm.querySelector("button").addEventListener('click', function(e) {
+  e.preventDefault();
+
+  const value = addForm.querySelector('input[type="text"]').value.trim();
+  if (!value) return;
+
+  const li = document.createElement('li');
+
+  if (value.includes(".")) {
+    // Archivo
+    const ExName = document.createElement('span');
+    const deleteBtn = document.createElement('span');
+    ExName.textContent = value;
+    deleteBtn.textContent = 'borrar';
+    ExName.classList.add('name');
+    deleteBtn.classList.add('delete');
+    li.append(ExName, deleteBtn);
+  } else {
+    // Carpeta
+    const carpetaDiv = document.createElement('div');
+    carpetaDiv.classList.add('carpeta');
+
+    const img = document.createElement('img');
+    img.src = "carpeta.png";
+    img.alt = "carpeta";
+    img.width = 50;
+
+    const title = document.createElement('h2');
+    title.classList.add('title');
+    title.textContent = value;
+
+    const plus = document.createElement('h1');
+    plus.classList.add('plusBtn');
+    plus.textContent = "+";
+
+    const label = document.createElement('label');
+    label.textContent = "Ocultar carpetas";
+
+    const hide = document.createElement('input');
+    hide.type = "checkbox";
+    hide.classList.add('hide');
+
+    carpetaDiv.append(img, title, plus, label, hide);
+    li.appendChild(carpetaDiv);
+
+    const innerUl = document.createElement('ul');
+    li.appendChild(innerUl);
+
+    activarOcultar(hide);
+  }
+
+  // 🔥 Agregar al destino actual (carpeta donde se hizo clic)
+  carpetaDestino.appendChild(li);
+
+  // Reset del popup
+  addForm.querySelector('input[type="text"]').value = "";
+  popup.style.display = 'none';
+});
+
+// --- BUSCAR ---
+const searchBar = document.forms['search-ex'].querySelector('input');
+searchBar.addEventListener('keyup', (e) => {
+  const term = e.target.value.toLowerCase();
+  const exercises = list.getElementsByTagName('li');
+  Array.from(exercises).forEach(exer => {
+    const title = exer.firstElementChild.textContent.toLowerCase();
+    exer.style.display = title.includes(term) ? 'block' : 'none';
+  });
 });
