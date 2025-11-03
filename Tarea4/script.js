@@ -106,3 +106,25 @@ searchBar.addEventListener('keyup',(e)=>{// FUNCIÓN DE FLECHA
     }
   });
 });
+
+// pop up
+document.querySelectorAll('.plusBtn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        // Busca el popup más cercano dentro del mismo "li" o contenedor
+        const popup = btn.closest('li')?.querySelector('.popup') || document.querySelector('.popup');
+        if (popup) popup.style.display = 'flex';
+    });
+});
+
+document.querySelectorAll('.close-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        btn.closest('.popup').style.display = 'none';
+    });
+});
+
+// Cierra si se hace clic fuera del popup
+window.addEventListener('click', (e) => {
+    document.querySelectorAll('.popup').forEach(popup => {
+        if (e.target === popup) popup.style.display = 'none';
+    });
+});

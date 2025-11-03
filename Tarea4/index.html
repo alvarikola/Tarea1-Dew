@@ -18,15 +18,25 @@
     
         <div id="ex-list">
             <div class="carpeta">
-                <img src="carpetaRaiz.png" alt="carpetaRaiz" width="60px">
+                <img src="carpetaRaiz.png" alt="carpetaRaiz" width="70px">
                 <h2 class="title">/</h2>
-                <h1>+</h1>
+                <h1 class="plusBtn">+</h1>
                 <label>Ocultar carpetas</label><input type="checkbox" id="hide" />
             </div>
             <ul>
                 <li>
-                    <span class="name">Calle</span>
-                    <span class="delete">borrar</span>
+                    <div class="carpeta">
+                        <img src="carpeta.png" alt="carpeta" width="50px">
+                        <h2 class="title">Carpeta 1</h2>
+                        <h1 class="plusBtn">+</h1> 
+                        <label>Ocultar carpetas</label><input type="checkbox" id="hide" />
+                    </div>
+                    <ul>
+                        <li>
+                            <span class="name">Aerolíneas</span>
+                            <span class="delete">borrar</span>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <span class="name">Aerolíneas</span>
@@ -42,10 +52,17 @@
                 </li>
             </ul>
         </div>
-        <form id="add-ex">
-            <input type="text" placeholder="Agregar un Ejercicio..." />
-            <button>Agregar</button>
-        </form>
+        <!-- Popup -->
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <h3>Nuevo elemento</h3>
+                <form id="add-ex">
+                    <input type="text" placeholder="Agregar un Ejercicio..." />
+                    <button>Agregar</button>
+                </form>
+                <button class="close-btn" id="closePopup">Cerrar</button>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
