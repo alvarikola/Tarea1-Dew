@@ -8,8 +8,30 @@ let carpetaDestino = list; // Por defecto, la raíz
 
 // --- BORRAR ---
 list.addEventListener('click', (e) => {
-  if (e.target.className === 'delete') {
-    e.target.parentElement.remove();
+  // Verifica si se hizo clic en el botón de borrar
+  if (e.target.classList.contains('delete')) {
+    const item = e.target.closest('li'); // El <li> que contiene el elemento a borrar
+
+    // Si no hay <li> (por ejemplo, carpeta raíz), no hacer nada
+    if (!item) return;
+
+    // Busca si tiene una sublista (<ul>) dentro
+    const subList = item.querySelector('ul');
+
+    // Caso 1: Es un archivo (no tiene <ul>)
+    if (!subList) {
+      item.remove();
+      return;
+    }
+
+    // Caso 2: Es una carpeta vacía (tiene <ul> pero sin hijos <li>)
+    if (subList.children.length == 0) {
+      item.remove();
+      return;
+    }
+
+    // Caso 3: Carpeta con contenido
+    alert("No puedes borrar porque la carpeta no está vacía");
   }
 });
 
@@ -55,7 +77,7 @@ window.addEventListener('click', (e) => {
   if (e.target === popup) popup.style.display = 'none';
 });
 
-// --- AÑADIR ARCHIVO / CARPETA ---
+// Añadir archivo o carpeta
 addForm.querySelector("button").addEventListener('click', function(e) {
   e.preventDefault();
 
@@ -66,21 +88,27 @@ addForm.querySelector("button").addEventListener('click', function(e) {
 
   if (value.includes(".")) {
     // Archivo
+    const img = document.createElement('img');
+    img.src = "archivo.png";
+    img.width = 30;
+
     const ExName = document.createElement('span');
-    const deleteBtn = document.createElement('span');
     ExName.textContent = value;
-    deleteBtn.textContent = 'borrar';
     ExName.classList.add('name');
+
+    const deleteBtn = document.createElement('span');
+    deleteBtn.textContent = 'borrar';
     deleteBtn.classList.add('delete');
-    li.append(ExName, deleteBtn);
+    
+    li.append(img, ExName, deleteBtn);
   } else {
+    
     // Carpeta
     const carpetaDiv = document.createElement('div');
     carpetaDiv.classList.add('carpeta');
 
     const img = document.createElement('img');
     img.src = "carpeta.png";
-    img.alt = "carpeta";
     img.width = 50;
 
     const title = document.createElement('h2');
@@ -98,7 +126,11 @@ addForm.querySelector("button").addEventListener('click', function(e) {
     hide.type = "checkbox";
     hide.classList.add('hide');
 
-    carpetaDiv.append(img, title, plus, label, hide);
+    const deleteBtn = document.createElement('span'); 
+    deleteBtn.textContent = 'borrar';
+    deleteBtn.classList.add('delete');
+
+    carpetaDiv.append(img, title, plus, label, hide, deleteBtn);
     li.appendChild(carpetaDiv);
 
     const innerUl = document.createElement('ul');
@@ -107,7 +139,7 @@ addForm.querySelector("button").addEventListener('click', function(e) {
     activarOcultar(hide);
   }
 
-  // 🔥 Agregar al destino actual (carpeta donde se hizo clic)
+  // Agregar al destino actual (carpeta donde se hizo clic)
   carpetaDestino.appendChild(li);
 
   // Reset del popup
