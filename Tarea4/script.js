@@ -1,4 +1,3 @@
-// --- VARIABLES BASE ---
 const searchForm = document.forms[0];
 const addForm = document.forms["add-ex"];
 const list = document.querySelector('#ex-list ul');
@@ -6,36 +5,36 @@ const popup = document.querySelector('.popup');
 
 let carpetaDestino = list; // Por defecto, la raíz
 
-// --- BORRAR ---
+// Borrar
 list.addEventListener('click', (e) => {
   // Verifica si se hizo clic en el botón de borrar
   if (e.target.classList.contains('delete')) {
     const item = e.target.closest('li'); // El <li> que contiene el elemento a borrar
 
-    // Si no hay <li> (por ejemplo, carpeta raíz), no hacer nada
+    // Si no hay <li> no hacer nada
     if (!item) return;
 
     // Busca si tiene una sublista (<ul>) dentro
     const subList = item.querySelector('ul');
 
-    // Caso 1: Es un archivo (no tiene <ul>)
+    // Si es un archivo (no tiene <ul>)
     if (!subList) {
       item.remove();
       return;
     }
 
-    // Caso 2: Es una carpeta vacía (tiene <ul> pero sin hijos <li>)
+    // Si es una carpeta vacía (tiene <ul> pero sin hijos <li>)
     if (subList.children.length == 0) {
       item.remove();
       return;
     }
 
-    // Caso 3: Carpeta con contenido
+    // Si es una carpeta con contenido
     alert("No puedes borrar porque la carpeta no está vacía");
   }
 });
 
-// --- FUNCIÓN DE OCULTAR ---
+// Ocultar
 function activarOcultar(hideBox) {
   hideBox.addEventListener('change', function() {
     let subList;
@@ -52,8 +51,7 @@ function activarOcultar(hideBox) {
 // Activar los existentes
 document.querySelectorAll('.hide').forEach(activarOcultar);
 
-// --- POPUP ---
-// Cuando se hace clic en el "+"
+// Cuando se hace clic en el "+" (popup)
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('plusBtn')) {
     const carpetaLi = e.target.closest('li');
@@ -88,6 +86,8 @@ addForm.querySelector("button").addEventListener('click', function(e) {
 
   if (value.includes(".")) {
     // Archivo
+    const archivos = document.getElementsByClassName
+
     const img = document.createElement('img');
     img.src = "archivo.png";
     img.width = 30;
@@ -142,18 +142,30 @@ addForm.querySelector("button").addEventListener('click', function(e) {
   // Agregar al destino actual (carpeta donde se hizo clic)
   carpetaDestino.appendChild(li);
 
-  // Reset del popup
+  // Borrar datos del popup
   addForm.querySelector('input[type="text"]').value = "";
   popup.style.display = 'none';
 });
 
-// --- BUSCAR ---
+// Buscar
 const searchBar = document.forms['search-ex'].querySelector('input');
 searchBar.addEventListener('keyup', (e) => {
   const term = e.target.value.toLowerCase();
-  const exercises = list.getElementsByTagName('li');
-  Array.from(exercises).forEach(exer => {
-    const title = exer.firstElementChild.textContent.toLowerCase();
-    exer.style.display = title.includes(term) ? 'block' : 'none';
-  });
+  const allLi = document.querySelectorAll('li');
+  allLi.forEach(li => {
+    const nombre = li.firstElementChild.textContent.toLowerCase();
+    if (nombre.includes(term)) {
+      li.style.display = 'block';
+
+      let parent = li.parentElement;
+      while (parent && parent.tagName === 'UL') {
+        parent.style.display = 'block';
+        if (parent.closest('li')) parent.closest('li').style.display = 'block';
+        parent = parent.parentElement;
+      }
+
+    } else {
+      li.style.display = 'none';
+    }
+    });
 });
