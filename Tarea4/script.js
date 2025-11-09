@@ -149,23 +149,36 @@ addForm.querySelector("button").addEventListener('click', function(e) {
 
 // Buscar
 const searchBar = document.forms['search-ex'].querySelector('input');
-searchBar.addEventListener('keyup', (e) => {
-  const term = e.target.value.toLowerCase();
-  const allLi = document.querySelectorAll('li');
+
+searchBar.addEventListener('input', (e) => {
+  const term = e.target.value.trim().toLowerCase();
+
+  const allLi = document.querySelectorAll('#ex-list ul li');
   allLi.forEach(li => {
-    const nombre = li.firstElementChild.textContent.toLowerCase();
+    const titleEl = li.querySelector('.title'); // carpeta
+    const nameEl = li.querySelector('.name'); // archivo
+
+    let nombre = '';
+    if (titleEl) {
+      nombre = titleEl.textContent.toLowerCase();
+    } 
+    else if (nameEl) {
+      nombre = nameEl.textContent.toLowerCase();
+    }
     if (nombre.includes(term)) {
-      li.style.display = 'block';
+      // mostrar el elemento coincidente
+      li.style.display = '';
 
       let parent = li.parentElement;
       while (parent && parent.tagName === 'UL') {
-        parent.style.display = 'block';
-        if (parent.closest('li')) parent.closest('li').style.display = 'block';
-        parent = parent.parentElement;
+        parent.style.display = '';
+        const parentLi = parent.parentElement;
+        if (parentLi && parentLi.tagName === 'LI') parentLi.style.display = '';
+        parent = parentLi ? parentLi.parentElement : null;
       }
-
     } else {
+      // ocultar los que no coinciden
       li.style.display = 'none';
     }
-    });
+  });
 });
