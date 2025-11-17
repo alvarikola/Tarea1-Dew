@@ -25,7 +25,7 @@ input.valido{
     border-color: #36cc36;
 }
 input.invalido{
-    border-color: orange;
+    border-color: red;
 }
 input + p{
     font-family: arial;
@@ -33,7 +33,7 @@ input + p{
     font-weight: bold;
     text-align: center;
     margin: 0 10px;
-    color: orange;
+    color: red;
     opacity: 0;
     height: 0;
 }
