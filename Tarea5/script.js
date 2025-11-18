@@ -13,9 +13,27 @@ const patterns = {
   contrasena: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$?¡_\-])[A-Za-z\d@$?¡_\-]{12,}$/
 };
 
-// Lista con todos los inputs excepto el de contraseña
+// Objeto del formulario
+const formulario = {
+  nombre: "",
+  apellidos: "",
+  dni: "",
+  fechaNacimiento: "",
+  codigoPostal: "",
+  email: "",
+  telefonoFijo: "",
+  telefonoMovil: "",
+  iban: "",
+  tarjetaCredito: "",
+  contrasena: ""
+};
+
+// Elementos del html (inputs y botones)
 const inputs = document.querySelectorAll('input, .normales');
-const contrasenas = document.querySelectorAll('input, .contrasena');
+const contrasenas = document.querySelectorAll('.contrasena');
+const botonGuardar = document.querySelector('#guardar');
+const botonRecuperar = document.querySelector('#recuperar');
+
 
 // Recorrer los inputs uno por uno
 inputs.forEach((input) => {
@@ -36,22 +54,28 @@ inputs.forEach((input) => {
     }
   }
 
-  // Validar cada input con la expresion regular que tenga el mismo nombre
+  // Validar cada input con diferentes métodos:
   input.addEventListener('keyup', (e) => { 
+    // Para todos los inputs comparando que la expresion regular tenga el mismo nombre
     validate(e.target, patterns[e.target.attributes.name.value]);
-    
-    contrasenas.forEach((contrasena) => {
-      console.log(contrasena[0])
-      if(contrasena[0].attributes.value == contrasena[1].attributes.value) {
-        contrasena[1].className = 'valido';
-      } else {
-        contrasena[1].className = 'invalido';
-      }
-    })
+
+    console.log(contrasenas[0].value);
+    console.log(contrasenas[1].value);
+
+    // Para el repetir contraseña comprando si el valor de las dos contraseñas es el mismo
+    if(contrasenas[1].value == contrasenas[0].value) {
+      contrasenas[1].className = 'valido';
+    } else {
+      contrasenas[1].className = 'invalido';
+    }
+
+    // Guardar el valor en el objeto formulario
+    if (formulario.hasOwnProperty(e.target.name)) {
+        formulario[e.target.name] = e.target.value;
+    }
 
   });
 });
-
 
 // Función de validación 'validate' para validar el valor del campo del formulario (variable 'campo') utilizando la expresión regular (variable 'regex').  
 function validate(campo, regex) {
@@ -62,3 +86,51 @@ function validate(campo, regex) {
       campo.className = 'invalido';
     }
 }
+
+// Ponerle la función guardar al clicar el boton
+botonGuardar.addEventListener('click', guardar);
+
+// Función para guardar el objeto en el sessionStorage
+function guardar() {
+  myJSON = JSON.stringify(formulario);
+  sessionStorage.setItem("formulario1", myJSON);
+  console.log("Formulario guardado")
+}
+
+// Ponerle la función recuperar al clicar el boton
+botonRecuperar.addEventListener('click', recuperar);
+
+// Función para recuperar los datos del sessionStorage
+function recuperar() {
+
+  // Recuperar
+  const text = sessionStorage.getItem("formulario1");
+  if (!text) return;
+
+  const datos = JSON.parse(text);
+  console.log("Formulario recuperado");
+
+  // Rellenar los inputs del formulario
+  for (let campo in datos) {
+    let input = document.querySelector(`input[name="${campo}"]`);
+    if (input) {
+      input.value = datos[campo];
+
+      // Actualizar el objeto formulario
+      formulario[campo] = datos[campo];
+
+      // Lanzar validación
+      if (patterns[campo]) {
+        validate(input, patterns[campo]);
+      }
+    }
+  }
+
+  // Validar las contraseñas entre sí
+  if (contrasenas[1].value === contrasenas[0].value) {
+    contrasenas[1].className = 'valido';
+  } else {
+    contrasenas[1].className = 'invalido';
+  }
+}
+

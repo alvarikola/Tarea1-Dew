@@ -19,8 +19,6 @@ input{
     outline: none !important;
 }
 
-/* Estilos de validación */
-
 input.valido{
     border-color: #36cc36;
 }
@@ -41,4 +39,37 @@ input.invalido + p{
     opacity: 1;
     height: auto;
     margin-bottom: 20px;
+}
+
+.botones {
+    width: 500px;              
+    margin: 20px auto;         
+    text-align: center;      
+}
+
+button {
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 10px 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    color: white;
+}
+
+#guardar {
+    background-color: #36cc36;
+}
+
+#guardar:hover {
+    transform: scale(1.05);
+}
+
+#recuperar {
+    background-color: #3a7bd5;
+}
+
+#recuperar:hover {
+    transform: scale(1.05);
 }
