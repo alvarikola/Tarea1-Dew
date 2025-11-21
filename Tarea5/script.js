@@ -5,7 +5,7 @@ const patterns = {
   dni: /^[x]*\d{8}[a-zA-Z]$/,
   fechaNacimiento: /^([0-2][0-9]|3[0-1])(\/)(0[1-9]|1[0-2])\2(\d{4})$/,
   codigoPostal: /^([0-4][0-9]|5[0-2])(\d{3})$/,
-  email: /[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}/,
+  email: /^[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}$/,
   telefonoFijo: /^([89]\d{2}(\s?\d{2}){3})$/,
   telefonoMovil: /^([67]\d{2}(\s?\d{2}){3})$/,
   iban: /[a-zA-Z]{2}[0-9]{20}$/,
