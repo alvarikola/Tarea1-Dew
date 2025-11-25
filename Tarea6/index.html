@@ -12,34 +12,34 @@
         <input class="normales" type="text" name="nombre" placeholder="Nombre">
         <p>El nombre debe comenzar con mayúscula</p>
 
-        <input class="normales" type="text" name="apellidos" placeholder="Apellidos">
+        <input class="normales" type="text" name="apellido" placeholder="Apellidos">
         <p>No más de dos separados por un espacio y que comiencen con mayúscula</p>
 
         <input class="normales" type="text" name="dni" placeholder="DNI">
         <p>Debe ser un DNI válido, ej: 12345678A</p>
 
-        <input class="normales" type="text" name="fechaNacimiento" placeholder="Fecha de nacmiento">
+        <input class="normales" type="text" name="fecha" placeholder="Fecha de nacmiento">
         <p>Debe ser en formato DD/MM/AAAA</p>
 
-        <input class="normales" type="text" name="codigoPostal" placeholder="Codigo postal">
+        <input class="normales" type="text" name="cp" placeholder="Codigo postal">
         <p>Debe ser un código postal válido, ej: 35500</p>
 
-        <input class="normales" type="text" name="email" placeholder="Email">
+        <input class="normales" type="text" name="correo" placeholder="Email">
         <p>Debe ser un email válido, ej: name@gmail.com</p>
 
-        <input class="normales" type="text" name="telefonoFijo" placeholder="Teléfono fijo">
+        <input class="normales" type="text" name="teléfono" placeholder="Teléfono fijo">
         <p>Debe ser un número de teléfono fijo válido, ej: 988 88 88 88</p>
 
-        <input class="normales" type="text" name="telefonoMovil" placeholder="Teléfono móvil">
+        <input class="normales" type="text" name="móvil" placeholder="Teléfono móvil">
         <p>Debe ser un número de teléfono móvil válido, ej: 672 88 88 88</p>
 
         <input class="normales" type="text" name="iban" placeholder="IBAN">
         <p>Debe ser un IBAN válido, ej: ES12345678901234567890</p>
 
-        <input class="normales" type="text" name="tarjetaCredito" placeholder="Tarjeta de crédito">
+        <input class="normales" type="text" name="tarjeta" placeholder="Tarjeta de crédito">
         <p>Debe ser un número de tarjeta de crédito válido, ej: 1234 1234 1234 1234</p>
 
-        <input class="contrasena" type="password" name="contrasena" placeholder="Contraseña">
+        <input class="contrasena" type="password" name="contraseña" placeholder="Contraseña">
         <p>Debe ser una contraseña válida, que contenga al menos 12 dígitos con letras, números y un carácter especial</p>
 
         <input class="contrasena" type="password" name="contrasena" placeholder="Repite la contraseña">
@@ -47,14 +47,13 @@
     </form>
 
     <div class="botones">
-        <button id="guardar">Guardar en session storage</button>
-        <button id="recuperar">Recuperar desde session storage</button>
+        <button id="recuperarJson" class="recuperar">Recuperar Json</button>
 
-        <button id="guardar">Guardar en php</button>
-        <button id="recuperar">Recuperar desde php</button>
+        <button id="guardarPhp" class="guardar">Guardar en php</button>
+        <button id="recuperarPhp" class="recuperar">Recuperar desde php</button>
 
-        <button id="guardar">Guardar en base de datos</button>
-        <button id="recuperar">Recuperar desde la base de datos</button>
+        <button id="guardarDb" class="guardar">Guardar en base de datos</button>
+        <button id="recuperarDb" class="recuperar">Recuperar desde la base de datos</button>
     </div>
 
     <script src="script.js"></script>
