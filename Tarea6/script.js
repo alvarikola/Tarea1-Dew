@@ -6,11 +6,11 @@ const patterns = {
     fecha: /^([0-2][0-9]|3[0-1])(\/)(0[1-9]|1[0-2])\2(\d{4})$/,
     cp: /^([0-4][0-9]|5[0-2])(\d{3})$/,
     correo: /^[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}$/,
-    teléfono: /^([89]\d{2}(\s?\d{2}){3})$/,
-    móvil: /^([67]\d{2}(\s?\d{2}){3})$/,
+    telefono: /^([89]\d{2}(\s?\d{2}){3})$/,
+    movil: /^([67]\d{2}(\s?\d{2}){3})$/,
     iban: /[a-zA-Z]{2}[0-9]{20}$/,
     tarjeta: /^(\d{4}[\s]?){3}\d{4}$/,
-    contraseña: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$?¡_\-])[A-Za-z\d@$?¡_\-]{12,}$/
+    contrasena: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$?¡_\-])[A-Za-z\d@$?¡_\-]{12,}$/
 };
 
 // Objeto del formulario
@@ -21,17 +21,20 @@ const formulario = {
   fecha: "",
   cp: "",
   correo: "",
-  teléfono: "",
-  móvil: "",
+  telefono: "",
+  movil: "",
   iban: "",
   tarjeta: "",
-  contraseña: ""
+  contrasena: ""
 };
 
 // Elementos del html (inputs y botones)
 const inputs = document.querySelectorAll('input, .normales');
 const contrasenas = document.querySelectorAll('.contrasena');
 const botonRecuperarJson = document.querySelector('#recuperarJson');
+const botonGuardarPhp = document.querySelector('#guardarPhp')
+const botonRecuperarPhp = document.querySelector('#recuperarPhp')
+
 
 
 // Recorrer los inputs uno por uno
@@ -137,3 +140,42 @@ function recuperarJson() {
     ourRequest.send();
 }
 
+botonGuardarPhp.addEventListener('click', guardarPhp);
+
+function guardarPhp() {
+  var xmlhttp = new XMLHttpRequest();
+
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+
+      console.log(this.responseText);
+
+      var myObj = JSON.parse(this.responseText);
+
+      console.log(myObj);
+    }
+  };
+
+  xmlhttp.open("POST", "index.php", true);
+  xmlhttp.send();
+}
+
+botonRecuperarPhp.addEventListener('click', recuperarPhp);
+
+function recuperarPhp() {
+  var xmlhttp = new XMLHttpRequest();
+
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+
+      console.log(this.responseText);
+
+      var myObj = JSON.parse(this.responseText);
+
+      console.log(myObj)
+    }
+  };
+
+  xmlhttp.open("GET", "index.php", true);
+  xmlhttp.send();
+}
