@@ -95,10 +95,8 @@ function validate(campo, regex) {
 // Ponerle la función recuperar al clicar el boton
 botonRecuperarJson.addEventListener('click', recuperarJson);
 
-// Función para recuperar los datos del sessionStorage
+// Función para recuperar los datos del archivo JSON
 function recuperarJson() {
-
-    // Recuperar
 
     var ourRequest = new XMLHttpRequest();
     ourRequest.open('GET', 'formulario.json');
@@ -142,8 +140,10 @@ function recuperarJson() {
     ourRequest.send();
 }
 
+// Ponerle la función guardar en php al clicar el boton
 botonGuardarPhp.addEventListener('click', guardarPhp);
 
+// Función para guardar los datos en PHP
 function guardarPhp() {
 
   formData = JSON.stringify(formulario);
@@ -155,20 +155,22 @@ function guardarPhp() {
     }
   };
 
-  xmlhttp.open("POST", "http://localhost/DEW/Tarea6/index.php", true);
+  xmlhttp.open("POST", "index.php", true);
   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xmlhttp.send("x=" + formData); 
 }
 
+// Ponerle la función recuperar en php al clicar el boton
 botonRecuperarPhp.addEventListener('click', recuperarPhp);
 
+// Función para recuperar los datos en PHP
 function recuperarPhp() {
   var xmlhttp = new XMLHttpRequest();
 
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
 
-      console.log(this.responseText);
+      //console.log(this.responseText);
 
       var myObj = JSON.parse(this.responseText);
 
@@ -180,8 +182,10 @@ function recuperarPhp() {
   xmlhttp.send();
 }
 
+// Ponerle la función guardar en base de datos al clicar el boton
 botonGuardarDb.addEventListener('click', guardarDb);
 
+// Función para guardar los datos en base de datos
 function guardarDb() {
   var nombre = formulario.nombre;
   var apellido = formulario.apellido;
@@ -199,7 +203,7 @@ function guardarDb() {
   var params = "nombre="+nombre+"&apellido="+apellido+"&dni="+dni+"&fecha="+fecha+"&cp="+cp+"&correo="+correo+"&telefono="+telefono+"&movil="+movil+"&iban="+iban+"&tarjeta="+tarjeta+"&contrasena="+contrasena;
 
   var xhr = new XMLHttpRequest();
-  xhr.open('POST','http://localhost/DEW/Tarea6/index.php', true);
+  xhr.open('POST','index.php', true);
   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');//add an HTTP header with setRequestHeader(). Specify the data you want to send in the send() method:
 
   xhr.onload = function(){
@@ -212,6 +216,18 @@ function guardarDb() {
 botonRecuperarDb.addEventListener('click', recuperarDb);
 
 function recuperarDb() {
-  // Implementar la lógica para recuperar de la base de datos
-  console.log("Recuperar de DB no implementado aún.");
+  var xhttp;
+  var dni = formulario.dni;
+  console.log(dni)
+  xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText);
+      var myObj = JSON.parse(this.responseText);
+
+      console.log(myObj)
+    }
+  };
+  xhttp.open("GET", "index.php?dni="+dni, true);
+  xhttp.send();
 }
