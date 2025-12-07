@@ -83,17 +83,17 @@ if (isset($_GET["dni"])) {
 
 // Si es una petición GET (desde "RecuperarPhp")
 $myObj = new stdClass;
-$myObj->name = "Pepe";
-$myObj->surname = "Lopez Perez";
+$myObj->nombre = "Pepe";
+$myObj->apellido = "Lopez Perez";
 $myObj->dni = "12345678X";
-$myObj->date = "22/09/2000";
+$myObj->fecha = "22/09/2000";
 $myObj->cp = 35500;
-$myObj->mail = "pepe@gmail.com";
-$myObj->phone = "928666666";
-$myObj->mobile = "666999666";
-$myObj->card = "4539955085883327";
-$myObj->iban = "ES7921000813610123456789";
-$myObj->password = "Pepe123456789*";
+$myObj->correo = "pepe@gmail.com";
+$myObj->telefono = "928666666";
+$myObj->movil = "666999666";
+$myObj->tarjeta = "4539955085883327";
+$myObj->iban = "ES79210008136101234567";
+$myObj->contrasena = "Pepe123456789*";
 
 echo json_encode($myObj);
 exit;

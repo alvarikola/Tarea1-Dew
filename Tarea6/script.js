@@ -10,7 +10,7 @@ const patterns = {
     movil: /^([67]\d{2}(\s?\d{2}){3})$/,
     iban: /[a-zA-Z]{2}[0-9]{20}$/,
     tarjeta: /^(\d{4}[\s]?){3}\d{4}$/,
-    contrasena: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$?¡_\-])[A-Za-z\d@$?¡_\-]{12,}$/
+    contrasena: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$?¡_\-\*])[A-Za-z\d@$?¡_\-\*]{12,}$/
 };
 
 // Objeto del formulario
@@ -91,6 +91,56 @@ function validate(campo, regex) {
     }
 }
 
+// Función para rellenar el formulario
+function rellenarFormulario(datos) {
+    for (let campo in datos) {
+        let input = document.querySelector(`input[name="${campo}"]`);
+        if (input) {
+            input.value = datos[campo];
+            formulario[campo] = datos[campo];
+
+            // validar cada campo
+            if (patterns[campo]) {
+                validate(input, patterns[campo]);
+            }
+        }
+    }
+
+    // validar repetir contraseña
+    if (contrasenas[1].value === contrasenas[0].value) {
+        contrasenas[1].className = 'valido';
+    } else {
+        contrasenas[1].className = 'invalido';
+    }
+}
+
+// Función para comprobar que el formulario esta correcto
+function todosValidos() {
+    const allInputs = document.querySelectorAll('input');
+
+    for (let input of allInputs) {
+        if (!input.classList.contains('valido')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Función para limpiar el formulario
+function limpiarFormulario() {
+    // Vaciar inputs
+    const allInputs = document.querySelectorAll('input');
+    allInputs.forEach(input => {
+        input.value = '';
+        input.className = ''; // quitar clases valido/invalido
+    });
+
+    // Vaciar objeto formulario
+    for (let campo in formulario) {
+        formulario[campo] = '';
+    }
+}
+
 
 // Ponerle la función recuperar al clicar el boton
 botonRecuperarJson.addEventListener('click', recuperarJson);
@@ -105,28 +155,8 @@ function recuperarJson() {
             var ourData = JSON.parse(ourRequest.responseText);
             console.log(ourRequest.responseText);
             
-            // Rellenar los inputs del formulario
-            for (let campo in ourData) {
-                let input = document.querySelector(`input[name="${campo}"]`);
-                if (input) {
-                    input.value = ourData[campo];
-
-                    // Actualizar el objeto formulario
-                    formulario[campo] = ourData[campo];
-
-                    // Lanzar validación
-                    if (patterns[campo]) {
-                        validate(input, patterns[campo]);
-                    }
-                }
-            }
-
-            // Validar las contraseñas entre sí
-            if (contrasenas[1].value === contrasenas[0].value) {
-                contrasenas[1].className = 'valido';
-            } else {
-                contrasenas[1].className = 'invalido';
-            }
+            // rellenar formulario
+            rellenarFormulario(ourData);
 
         } else {
             console.log("We connected to the server, but it returned an error.");
@@ -146,12 +176,20 @@ botonGuardarPhp.addEventListener('click', guardarPhp);
 // Función para guardar los datos en PHP
 function guardarPhp() {
 
+  if (!todosValidos()) {
+    console.log("No se puede enviar: hay campos inválidos");
+    return;
+  }
+
   formData = JSON.stringify(formulario);
 
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       console.log(JSON.parse(this.responseText));
+
+      // limpiar formulario
+      limpiarFormulario()
     }
   };
 
@@ -175,6 +213,9 @@ function recuperarPhp() {
       var myObj = JSON.parse(this.responseText);
 
       console.log(myObj)
+
+      // rellenar formulario
+      rellenarFormulario(myObj);
     }
   };
 
@@ -187,6 +228,12 @@ botonGuardarDb.addEventListener('click', guardarDb);
 
 // Función para guardar los datos en base de datos
 function guardarDb() {
+
+  if (!todosValidos()) {
+    console.log("No se puede enviar a BD: hay campos inválidos");
+    return;
+  }
+
   var nombre = formulario.nombre;
   var apellido = formulario.apellido;
   var dni = formulario.dni;
@@ -208,6 +255,9 @@ function guardarDb() {
 
   xhr.onload = function(){
     console.log(this.responseText);
+
+    // limpoiar formulario
+    limpiarFormulario()
   }
 
   xhr.send(params);
@@ -226,6 +276,9 @@ function recuperarDb() {
       var myObj = JSON.parse(this.responseText);
 
       console.log(myObj)
+
+      // rellenar formulario
+      rellenarFormulario(myObj);
     }
   };
   xhttp.open("GET", "index.php?dni="+dni, true);
