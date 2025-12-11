@@ -5,14 +5,13 @@ const contadorElement = document.getElementById("contador");
 const temporizadorElement = document.getElementById("temporizador");
 const recordElement = document.getElementById("record");
 
-
 const imagenOrdenada = [
     "1.jpeg", "2.jpeg", "3.jpeg",
     "4.jpeg", "5.jpeg", "6.jpeg",
     "7.jpeg", "8.jpeg"
 ];
 
-//para cada posición, qué posiciones son adyacentes
+// para cada posición, qué posiciones son adyacentes
 const adyacentes = {
     1: [2, 4],
     2: [1, 3, 5],
@@ -40,7 +39,8 @@ function actualizarTemporizador() {
 }
 
 function actualizarContador() {
-    contador.textContent = `Movimientos: ${movimientos}`;
+    // usar la variable correcta
+    contadorElement.textContent = `Movimientos: ${movimientos}`;
 }
 
 function cargarRecord() {
@@ -56,7 +56,7 @@ function cargarRecord() {
 function guardarRecord(min, seg) {
     const tiempoActual = min * 60 + seg;
     const recordGuardado = localStorage.getItem("record");
-    
+
     if (!recordGuardado) {
         localStorage.setItem("record", `${min}:${seg}`);
         cargarRecord();
@@ -74,7 +74,6 @@ function guardarRecord(min, seg) {
 
 function iniciarTemporizador() {
     if (intervalo) return; // ya está corriendo
-
     intervalo = setInterval(() => {
         segundos++;
         if (segundos === 60) {
@@ -92,55 +91,58 @@ function detenerTemporizador() {
     }
 }
 
-function shuffle(array) { 
-  return array.sort(() => Math.random() - 0.5); 
+function shuffle(array) {
+    // versión simple que por lo menos evita dejarlo ya ordenado
+    let arr = array.slice();
+    do {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        // mantener bucle si por casualidad quedó igual que imagenOrdenada
+    } while (arr.every((val, idx) => val === imagenOrdenada[idx]));
+    return arr;
 }
 
 function obtenerPosicionHueco() {
-    // El hueco es la celda sin imagen
     for (let i = 1; i <= 9; i++) {
         const celda = document.getElementById(i);
         if (!celda.querySelector("img")) {
             return i;
         }
     }
-    return 9; // por defecto
+    return 9;
 }
 
 function intercambiar(pos1, pos2) {
     const celda1 = document.getElementById(pos1);
     const celda2 = document.getElementById(pos2);
 
-    // Guardar el contenido de ambas celdas
     const contenido1 = celda1.innerHTML;
     const contenido2 = celda2.innerHTML;
 
-    // Intercambiar
     celda1.innerHTML = contenido2;
     celda2.innerHTML = contenido1;
 }
 
 function manejarClic(event) {
-    // Si clickearon en una imagen, obtenemos su celda padre (td)
     const celda = event.target.closest("td");
     if (!celda) return;
 
-    const posClic = parseInt(celda.id);
+    const posClic = parseInt(celda.id, 10);
     const posHueco = obtenerPosicionHueco();
 
-    // Si ya es el hueco, no hacer nada
     if (posClic === posHueco) return;
 
-    // Verificar si son vecinos
     if (adyacentes[posHueco].includes(posClic)) {
-      if (!juegoIniciado) {
+        if (!juegoIniciado) {
             juegoIniciado = true;
             iniciarTemporizador();
-      }
-      intercambiar(posClic, posHueco);
-      movimientos++;
-      actualizarContador();
-      verificarVictoria();
+        }
+        intercambiar(posClic, posHueco);
+        movimientos++;
+        actualizarContador();
+        verificarVictoria();
     }
 }
 
@@ -149,15 +151,24 @@ function verificarVictoria() {
     for (let i = 1; i <= 8; i++) {
         const celda = document.getElementById(i);
         const img = celda.querySelector("img");
-        if (!img || img.src !== `${i}.jpeg`) {
+        // comparo el src tal y como está en el atributo (no la URL absoluta)
+        const src = img ? img.getAttribute('src') : null;
+        if (!img || src !== `${i}.jpeg`) {
             correcto = false;
             break;
         }
     }
+    // la casilla 9 debe estar vacía
+    const celda9 = document.getElementById(9);
+    if (celda9.querySelector("img")) correcto = false;
+
     if (correcto) {
-      detenerTemporizador();
-      guardarRecord(minutos, segundos);
-      alert(`¡Felicidades! Has resuelto el rompecabezas con ${movimientos} movimientos`);
+        detenerTemporizador();
+        guardarRecord(minutos, segundos);
+        juegoIniciado = false;
+        // desactivar clicks para evitar más movimientos
+        document.querySelectorAll("td").forEach(td => td.removeEventListener("click", manejarClic));
+        alert(`¡Felicidades! Has resuelto el rompecabezas con ${movimientos} movimientos en ${formatearTiempo(minutos, segundos)}.`);
     }
 }
 
@@ -166,7 +177,7 @@ function guardarPartida() {
     for (let i = 1; i <= 9; i++) {
         const celda = document.getElementById(i);
         const img = celda.querySelector("img");
-        estado.push(img ? img.src.split('/').pop() : null);
+        estado.push(img ? img.getAttribute('src') : null);
     }
 
     const partida = {
@@ -190,7 +201,6 @@ function cargarPartida() {
 
     const { estado, movimientos: mov, minutos: min, segundos: seg, juegoIniciado: iniciado } = JSON.parse(partidaGuardada);
 
-    // Restaurar tablero
     for (let i = 1; i <= 9; i++) {
         const celda = document.getElementById(i);
         const archivo = estado[i - 1];
@@ -201,7 +211,6 @@ function cargarPartida() {
         }
     }
 
-    // Restaurar estado
     movimientos = mov;
     minutos = min;
     segundos = seg;
@@ -210,13 +219,11 @@ function cargarPartida() {
     actualizarContador();
     actualizarTemporizador();
 
-    // Si el juego ya había empezado, reanudar temporizador
     if (juegoIniciado) {
-        detenerTemporizador(); // por si acaso
+        detenerTemporizador();
         iniciarTemporizador();
     }
 
-    // Reasignar eventos
     document.querySelectorAll("td").forEach(td => {
         td.removeEventListener("click", manejarClic);
         td.addEventListener("click", manejarClic);
@@ -236,7 +243,6 @@ function iniciar() {
     actualizarContador();
     actualizarTemporizador();
 
-    // Limpiar eventos
     document.querySelectorAll("td").forEach(td => {
         td.removeEventListener("click", manejarClic);
     });
@@ -250,13 +256,70 @@ function iniciar() {
     }
     document.getElementById(9).innerHTML = "";
 
-    // Reasignar eventos
     document.querySelectorAll("td").forEach(td => {
         td.addEventListener("click", manejarClic);
     });
 }
 
+/* ---------- UTILIDADES PARA PROBAR RÁPIDO ---------- */
+/* Añade un botón "Auto-resolver" y "Casi-resuelto" para probar la detección de victoria. */
+function crearBotonesPrueba() {
+    const container = document.createElement('div');
+    container.style.margin = '8px 0';
+
+    const btnAuto = document.createElement('button');
+    btnAuto.textContent = 'Auto-resolver (prueba)';
+    btnAuto.addEventListener('click', autoResolver);
+
+    const btnCasi = document.createElement('button');
+    btnCasi.textContent = 'Casi resuelto (1 movimiento)';
+    btnCasi.addEventListener('click', dejarCasiResuelto);
+
+    container.appendChild(btnAuto);
+    container.appendChild(document.createTextNode(' '));
+    container.appendChild(btnCasi);
+
+    document.body.appendChild(container);
+}
+
+function autoResolver() {
+    // Pone el tablero en estado resuelto y fuerza la comprobación de victoria
+    for (let i = 1; i <= 8; i++) {
+        const celda = document.getElementById(i);
+        celda.innerHTML = `<img src="${i}.jpeg" alt="${i}">`;
+    }
+    document.getElementById(9).innerHTML = "";
+    movimientos = 0;
+    minutos = 0;
+    segundos = 0;
+    actualizarContador();
+    actualizarTemporizador();
+    verificarVictoria();
+}
+
+function dejarCasiResuelto() {
+    // Estado resuelto salvo que las posiciones 7 y 8 estén intercambiadas (requiere 1 movimiento)
+    for (let i = 1; i <= 8; i++) {
+        const celda = document.getElementById(i);
+        celda.innerHTML = `<img src="${i}.jpeg" alt="${i}">`;
+    }
+    // intercambiamos 8 y 7 para dejar 1 movimiento posible
+    const temp = document.getElementById(8).innerHTML;
+    document.getElementById(8).innerHTML = "";
+    document.getElementById(9).innerHTML = temp;
+
+    movimientos = 0;
+    minutos = 0;
+    segundos = 0;
+    actualizarContador();
+    actualizarTemporizador();
+}
+
+/* ---------- FIN UTILIDADES ---------- */
 
 btnIniciar.addEventListener("click", iniciar);
 btnGuardar.addEventListener("click", guardarPartida);
 btnCargar.addEventListener("click", cargarPartida);
+
+//cargarRecord();
+//crearBotonesPrueba();
